@@ -1,3 +1,5 @@
+import subprocess
+import sys
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api._errors import NoTranscriptFound, TranscriptsDisabled
 from transformers import pipeline
@@ -34,21 +36,8 @@ def createTranscript(video_id, retries=3, delay=2):
     print(f"Failed to fetch transcript after {retries} attempts.")
     return None
 
-def summarize_transcript(transcript):
-    """
-    Summarizes the transcript of a YouTube video.
-
-    Args:
-        transcript (str): The transcript of the YouTube video.
-
-    Returns:
-        str: A summary of the video's transcript.
-    """
-    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-    summary = summarizer(transcript, max_length=130, min_length=30, do_sample=False)
-    return summary[0]['summary_text']
-
 if __name__ == "__main__":
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "youtube_transcript_api"])
     while True:
         url = input("Enter YouTube URL: ").strip()
         match = re.search(r"v=([^&]+)", url)
@@ -58,10 +47,6 @@ if __name__ == "__main__":
             transcript = createTranscript(video_id)
             if transcript:
                 print("Transcript fetched successfully!")
-                print(transcript)
-                summary = summarize_transcript(transcript)
-                print("Summary:")
-                print(summary)
             else:
                 print("Failed to fetch transcript.")
         else:
