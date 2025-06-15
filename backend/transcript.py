@@ -2,8 +2,6 @@ import subprocess
 import sys
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api._errors import NoTranscriptFound, TranscriptsDisabled
-from transformers import pipeline
-import re
 import time
 
 def createTranscript(video_id, retries=3, delay=2):
@@ -32,23 +30,7 @@ def createTranscript(video_id, retries=3, delay=2):
             return None
         except Exception as e:
             print(f"Error fetching transcript (attempt {attempt + 1}): {e}")
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "youtube_transcript_api"])
             time.sleep(delay)
     print(f"Failed to fetch transcript after {retries} attempts.")
     return None
-
-if __name__ == "__main__":
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "youtube_transcript_api"])
-    while True:
-        url = input("Enter YouTube URL: ").strip()
-        match = re.search(r"v=([^&]+)", url)
-        if match:
-            video_id = match.group(1)
-            print(f"Extracted video ID: {video_id}")
-            transcript = createTranscript(video_id)
-            if transcript:
-                print("Transcript fetched successfully!")
-            else:
-                print("Failed to fetch transcript.")
-        else:
-            print("Invalid YouTube URL")
-            break
