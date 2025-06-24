@@ -1,7 +1,7 @@
 import re
 from backend.transcript import createTranscript
 from backend.summarizer import analyze_and_summarize
-from backend.video_download import creation_video
+from backend.video_download import video_creation
 
 def main():
     print("Welcome to the YouTube Transcript Fetcher!")
@@ -9,7 +9,7 @@ def main():
     while True:
         url = input("Enter YouTube URL: ")
         if url.startswith("https://www.youtube.com"):
-            creation_video(url)
+            video_creation(url)
             match = re.search(r"v=([^&]+)", url.strip())
             if match:
                 video_id = match.group(1)
