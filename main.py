@@ -9,21 +9,18 @@ def main():
     while True:
         url = input("Enter YouTube URL: ")
         if url.startswith("https://www.youtube.com"):
-            video_creation(url)
             match = re.search(r"v=([^&]+)", url.strip())
             if match:
                 video_id = match.group(1)
                 print(f"Extracted video ID: {video_id}")
                 transcript = createTranscript(video_id)
-                if transcript:
-                    print("Transcript fetched successfully!")
-                    print(transcript)
-                    print("Analyzing and summarizing the transcript...")
-                    summary = analyze_and_summarize(transcript)
-                    print("Summary:")
-                    print(summary)
-                else:
-                    print("Failed to fetch transcript.")
+                print("Transcript fetched successfully!")
+                video_creation(url, transcript)
+                print(transcript)
+                print("Analyzing and summarizing the transcript...")
+                summary = analyze_and_summarize(transcript)
+                print("Summary:")
+                print(summary)
         else:
             print("Invalid YouTube URL")
             break

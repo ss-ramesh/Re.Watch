@@ -3,6 +3,8 @@ import sys
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api._errors import NoTranscriptFound, TranscriptsDisabled
 import time
+import whisper
+
 
 def createTranscript(video_id, retries=3, delay=2):
     """
@@ -19,8 +21,11 @@ def createTranscript(video_id, retries=3, delay=2):
     ytt_api = YouTubeTranscriptApi()
     for attempt in range(retries):
         try:
-            fetched_transcript = ytt_api.fetch(video_id)
-            transcript_lines = [snippet.text for snippet in fetched_transcript]
+            fetched_transcript = ytt_api.get_transcript(video_id)
+            if attempt < 1:
+                transcript_lines = [snippet['text'] for snippet in fetched_transcript]
+            else:
+                transcript_lines = [snippet.text for snippet in fetched_transcript]
             return "\n".join(transcript_lines)
         except NoTranscriptFound:
             print(f"No transcript found for video ID: {video_id}.")
@@ -34,3 +39,12 @@ def createTranscript(video_id, retries=3, delay=2):
             time.sleep(delay)
     print(f"Failed to fetch transcript after {retries} attempts.")
     return None
+
+if __name__ == "__main__":
+    video_id = input("Enter YouTube video ID: ")
+    transcript = createTranscript(video_id)
+    if transcript:
+        print("Transcript fetched successfully!")
+        print(transcript)
+    else:
+        print("Failed to fetch transcript.")

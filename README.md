@@ -14,3 +14,4 @@ Video_download.py:
 Summarizer.py:
 - Takes the transcript and uses an open-source LLM to write a few paragraphs of the video.
 - Writes auto-complete query questions for the user to ask.
+
